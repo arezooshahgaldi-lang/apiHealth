@@ -20,4 +20,8 @@ public class ProjectService {
     public Collection<Project> findAll() {
         return projects.values();
     }
+    public boolean deleteById(UUID id) {
+        return projects.remove(id) != null;
+    }
+
 }
