@@ -1,35 +1,25 @@
-name: Publish container image
+name: build and publish Docker image
 
 on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-  packages: write
+
 
 jobs:
-  publish:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: log in to Docker Hub
+      - name: Log in to Docker Hub
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERUSER }}
           password: ${{ secrets.DOCKERHUBTOKEN }}
-      - name: Creat Docker image tags
-        id: metadata
-      - uses: docker/metadata-action@v5
-        with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/api-health
-          tags: |
-            type=sha,prefix=
-            type=raw,value=latest
-      - name: Build and publish Docker image
-      - uses: docker/build-push-action@v6
+      - name: Build and push image
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+          platforms: linux/amd64
+          tags: docker.io/arezoo1983/myapi:latest
